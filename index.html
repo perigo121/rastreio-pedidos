@@ -169,7 +169,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
-    // ==================== CONFIGURAÇÃO JSONBIN (COM SEUS DADOS) ====================
+    // ==================== CONFIGURAÇÃO JSONBIN ====================
     const JSONBIN_BIN_ID = "6a1d150e21f9ee59d2a389cb";
     const JSONBIN_API_KEY = "$2a$10$PvQtpKjpP7.UMO8QT24y8.qqVL/0vibGB0cDTJIWzvTbfoXgzQy2.";
     
@@ -182,7 +182,6 @@
     // ==================== FUNÇÕES DE SINCRONIZAÇÃO NA NUVEM ====================
     async function loadFromCloud() {
         try {
-            showToast("🔄 Carregando dados da nuvem...");
             const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
                 headers: { "X-Master-Key": JSONBIN_API_KEY }
             });
@@ -192,12 +191,10 @@
                 if (data.record && Object.keys(data.record).length > 0) {
                     trackingDatabase = data.record;
                     saveToLocal();
-                    showToast("✅ Dados carregados da nuvem!");
                 } else {
                     loadFromLocal();
                 }
             } else {
-                console.log("Erro ao carregar da nuvem, usando local");
                 loadFromLocal();
             }
         } catch (error) {
@@ -212,7 +209,7 @@
         isSaving = true;
         
         try {
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+            await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -220,10 +217,6 @@
                 },
                 body: JSON.stringify(trackingDatabase)
             });
-            
-            if (response.ok) {
-                console.log("✅ Dados salvos na nuvem");
-            }
         } catch (error) {
             console.error("Erro ao salvar na nuvem:", error);
         }
@@ -409,7 +402,7 @@
         document.getElementById('newCode').value = '';
         document.getElementById('newOrigin').value = '';
         document.getElementById('newDestination').value = '';
-        showToast(`✅ Código ${code} criado com sucesso! (salvo na nuvem)`);
+        showToast(`✅ Código ${code} criado com sucesso!`);
     });
 
     // ==================== ADMIN: ADICIONAR EVENTO ====================
@@ -431,7 +424,7 @@
         document.getElementById('eventStatus').value = '';
         document.getElementById('eventDesc').value = '';
         document.getElementById('eventLocation').value = '';
-        showToast('✅ Evento adicionado com sucesso! (salvo na nuvem)');
+        showToast('✅ Evento adicionado com sucesso!');
     });
 
     // ==================== ATALHO SECRETO E LOGIN ====================
@@ -557,7 +550,6 @@
     loadFromCloud();
     
     console.log("%c🔐 Atalho secreto ativado! Digite: S E N H A", "color: #0891b2; font-size: 14px; font-weight: bold;");
-    console.log("%c📡 Sincronização com JSONBin configurada!", "color: #FF6600; font-size: 12px;");
 </script>
 </body>
 </html>
